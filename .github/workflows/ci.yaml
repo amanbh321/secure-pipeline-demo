@@ -47,3 +47,11 @@ jobs:
         with:
           command: sbom
           image: secure-pipeline:latest
+      
+      - name: Docker Scout Scan
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: ${{ secrets.DOCKER_USERNAME }}/secure-pipeline:latest
+          only-severities: critical,high
+          exit-code: true
