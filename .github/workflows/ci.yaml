@@ -45,7 +45,7 @@ jobs:
         uses: docker/scout-action@v1
         with:
           command: cves
-          image: $IMAGE_NAME
+          image: ${{ env.IMAGE_NAME }}
           only-severities: critical,high
           exit-code: true
 
@@ -53,4 +53,4 @@ jobs:
         uses: docker/scout-action@v1
         with:
           command: sbom
-          image: $IMAGE_NAME
+          image: ${{ env.IMAGE_NAME }}
