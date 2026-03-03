@@ -41,3 +41,9 @@ jobs:
           command: cves
           image: secure-pipeline:latest
           only-severities: critical, high
+
+      - name: Generate SBOM
+        uses: docker/scout-action@v1
+        with:
+          command: sbom
+          image: secure-pipeline:latest
