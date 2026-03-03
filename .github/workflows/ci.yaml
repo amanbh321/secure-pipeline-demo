@@ -28,3 +28,10 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t secure-pipeline:latest .
+
+      - name: Docker Scout Scan
+        uses: docker/scout-action@v1
+        with:
+          command: cves
+          image: secure-notes:latest
+          only-severities: critical, high
