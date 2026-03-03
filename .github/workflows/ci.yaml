@@ -39,5 +39,5 @@ jobs:
         uses: docker/scout-action@v1
         with:
           command: cves
-          image: secure-notes:latest
+          image: secure-pipeline:latest
           only-severities: critical, high
