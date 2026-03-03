@@ -9,6 +9,9 @@ jobs:
   test-build-scan:
     runs-on: ubuntu-latest
 
+    env:
+      IMAGE_NAME: ${{ secrets.DOCKER_USERNAME }}/secure-pipeline:latest
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -26,32 +29,28 @@ jobs:
       - name: Run unit tests
         run: pytest
 
-      - name: Build Docker image
-        run: docker build -t secure-pipeline:latest .
-      
       - name: Log in to Docker Hub
         uses: docker/login-action@v3
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Docker Scout Scan
+      - name: Build Docker image
+        run: docker build -t $IMAGE_NAME .
+
+      - name: Push Docker image
+        run: docker push $IMAGE_NAME
+
+      - name: Docker Scout Scan (Fail on High/Critical)
         uses: docker/scout-action@v1
         with:
           command: cves
-          image: secure-pipeline:latest
-          only-severities: critical, high
+          image: $IMAGE_NAME
+          only-severities: critical,high
+          exit-code: true
 
       - name: Generate SBOM
         uses: docker/scout-action@v1
         with:
           command: sbom
-          image: secure-pipeline:latest
-      
-      - name: Docker Scout Scan
-        uses: docker/scout-action@v1
-        with:
-          command: cves
-          image: ${{ secrets.DOCKER_USERNAME }}/secure-pipeline:latest
-          only-severities: critical,high
-          exit-code: true
+          image: $IMAGE_NAME
